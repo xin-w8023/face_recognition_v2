@@ -25,6 +25,7 @@ class Register(object):
         self.connect.commit()
 
 
+
     def insert_query(self, name:str, encoding:str, pension=0):
         sql = f'INSERT INTO {self.table_name} (NAME, PENSION, ENCODING) VALUES ("{name}", "{pension}", "{encoding}")'
         try:

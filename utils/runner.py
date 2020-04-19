@@ -28,6 +28,9 @@ class Runner(object):
         if not isinstance(face_img, np.ndarray):
             return '请打开摄像头'
         encoding = api.face_encodings(face_img)[0]
+        all_names = [item[0] for item in self.register.get_detail_with_pension()]
+        if name in all_names:
+            return '已采集过'
         ret, msg = self.register.insert_query(name, str(encoding.tolist()))
         if not ret:
             return f'Register {name} Error, Msg: {msg}'
@@ -41,6 +44,7 @@ class Runner(object):
         :param face_folder: image file folder
         :return: recognize result
         """
+        print(face_img)
         if not isinstance(face_img, np.ndarray):
             return ('请打开摄像头',)
         know_encodings = self.register.get_encodings()
@@ -70,9 +74,10 @@ class Runner(object):
                 name = re.split('[./]', img)[-2]
                 face_img = api.load_image_file(img)
                 res = self.run_register(name, face_img)
-                if res != '注册成功':
+                if res not in  ('注册成功', '已采集过'):
                     return f'{name} 注册失败，请检查照片'
-            return '批量注册成功！'
+            else:
+                return '批量注册成功！'
         else:
             import cv2
             for video in glob.glob(os.path.join(folder, "*.mp4")):
@@ -85,11 +90,13 @@ class Runner(object):
                     else:
                         img = cv2.resize(img, (640, 480))
                         res = self.run_register(name, img)
-                        if res != '注册成功':
+                        if res not in  ('注册成功', '已采集过'):
                             return f'{name} 注册失败，请检查视频'
                         else:
                             break
-            return '批量注册成功！'
+                cap.release()
+            else:
+                return '批量注册成功！'
 
     def get_detail_with_pension(self):
         return self.register.get_detail_with_pension()
