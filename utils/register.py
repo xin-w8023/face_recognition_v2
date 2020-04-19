@@ -14,19 +14,31 @@ class Register(object):
 
     def __create_face_lib(self):
         sql = f'CREATE TABLE IF NOT EXISTS {self.table_name} (ID INTEGER PRIMARY KEY AUTOINCREMENT , ' \
-              f'NAME TEXT NOT NULL, ENCODING TEXT NOT NULL)'
+              f'NAME TEXT NOT NULL, PENSION INTEGER DEFAULT 0, ENCODING TEXT NOT NULL)'
 
         self.cursor.execute(sql)
         self.connect.commit()
 
-    def insert_query(self, name:str, encoding:str):
-        sql = f'INSERT INTO {self.table_name} (NAME, ENCODING) VALUES ("{name}", "{encoding}")'
+    def update_query(self, name):
+        sql = f'UPDATE {self.table_name} SET PENSION=1 WHERE NAME=="{name}"'
+        self.cursor.execute(sql)
+        self.connect.commit()
+
+
+    def insert_query(self, name:str, encoding:str, pension=0):
+        sql = f'INSERT INTO {self.table_name} (NAME, PENSION, ENCODING) VALUES ("{name}", "{pension}", "{encoding}")'
         try:
             self.cursor.execute(sql)
             self.connect.commit()
         except Exception as e:
             return False, e
         return True, ""
+
+    def get_detail_with_pension(self):
+        sql = f'select name, pension from {self.table_name}'
+        ret = self.cursor.execute(sql)
+        res = self.cursor.fetchall()
+        return res
 
     def get_encoding_by_name(self, name) -> np.ndarray:
         sql = f'select id, name, encoding from {self.table_name} where NAME=="{name}"'
@@ -60,6 +72,7 @@ class Register(object):
         self.cursor.execute(sql)
         self.connect.commit()
         self.update_id()
+
     def update_id(self):
         sql = f'UPDATE sqlite_sequence SET seq=0 WHERE name="{self.table_name}"'
         self.cursor.execute(sql)

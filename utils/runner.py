@@ -1,69 +1,61 @@
-import os
-import api
-import glob
+import math
 
+import numpy as np
+
+import api
 from utils.register import Register
 
 
 class Runner(object):
-    def __init__(self, register:Register=None, face_folder:str=None,
-                 test:bool=False, clear:bool=False):
+    def __init__(self, register:Register=None, tolerance:float = 0.42):
         self.register = register
-        self.face_folder = face_folder
-        self.clear = clear
-        self.test = test
+        self.tolerance = tolerance
 
-    def run(self):
-        if self.clear:
-            self.register.clear()
-        if self.face_folder is not None:
-            if self.test:
-                return self._run_test()
-            else:
-                return self._run_register()
+    def clear(self):
+        self.register.clear()
 
-    def _run_register(self):
-        """Register register's face encoding into data base
+    def run_register(self, name, face_img):
+        """Register a register's face encoding into data base
+
         Parameters:
             register: data base handler
             face_folder: image file folder
         Returns:
 
         """
-        import re
-        for img in glob.glob(os.path.join(self.face_folder, "*.jpg")):
-            name = re.split('[./]', img)[-2]
-            encoding = api.face_encodings(api.load_image_file(img))[0]
-
-            ret, msg = self.register.insert_query(name, str(encoding.tolist()))
-            if not ret:
-                return f'Register {img} Error, Msg: {msg}'
+        if not isinstance(face_img, np.ndarray):
+            return '请打开摄像头'
+        encoding = api.face_encodings(face_img)[0]
+        ret, msg = self.register.insert_query(name, str(encoding.tolist()))
+        if not ret:
+            return f'Register {name} Error, Msg: {msg}'
         else:
-            return ('Register successed')
+            return '注册成功'
 
-    def _run_test(self):
+    def run_test(self, face_img):
         """
         face recognition
         :param register: data base handler
         :param face_folder: image file folder
         :return: recognize result
         """
+        if not isinstance(face_img, np.ndarray):
+            return ('请打开摄像头',)
         know_encodings = self.register.get_encodings()
-        res = {}
-        for img in glob.glob(os.path.join(self.face_folder, "*.jpg")):
-            # Load a test image and get face enconding
-            image_to_test = api.load_image_file(img)
-            image_to_test_encoding = api.face_encodings(image_to_test)[0]
-            test_res = []
-            for id, (name, encoding) in know_encodings.items():
+        try:
+            image_to_test_encoding = api.face_encodings(face_img)[0]
+        except IndexError:
+            return ('识别失败，为检测到人脸，请重试，请勿遮挡面部')
+        res_name, res_distance = '识别失败，未找到与之匹配的人', math.inf
+        for id, (name, encoding) in know_encodings.items():
 
-                face_ret = api.compare_faces(encoding, image_to_test_encoding, tolerance=0.42)
-                if face_ret:
-                    test_res += [name]
-            if len(test_res) > 0:
-                # return(f'Face Recognition successed, {img} is {test_res}')
-                res[img] = test_res
-            else:
-                # return(f'Face {img} Recognition failed, please try again !!!')
-                res[img] = None
-        return res
+            face_ret, distance = api.compare_faces(encoding, image_to_test_encoding, tolerance=self.tolerance)
+            if face_ret:
+                if distance < res_distance:
+                    res_name = name
+                    res_distance = distance
+        self.register.update_query(name=res_name)
+        return [res_name]
+
+    def get_detail_with_pension(self):
+        return self.register.get_detail_with_pension()

@@ -114,5 +114,6 @@ def compare_faces(known_face_encodings, face_encoding_to_check, tolerance=0.4):
     Returns:
         A list of True/False values indicating which known_face_encodings match the face encoding to check
     """
-    return face_distance(known_face_encodings, face_encoding_to_check) <= tolerance
-    # return face_distance(known_face_encodings, face_encoding_to_check)
+
+    distance = face_distance(known_face_encodings, face_encoding_to_check)
+    return  distance <= tolerance, distance
