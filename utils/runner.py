@@ -1,4 +1,6 @@
+
 import math
+
 
 import numpy as np
 
@@ -45,8 +47,8 @@ class Runner(object):
         try:
             image_to_test_encoding = api.face_encodings(face_img)[0]
         except IndexError:
-            return ('识别失败，为检测到人脸，请重试，请勿遮挡面部')
-        res_name, res_distance = '识别失败，未找到与之匹配的人', math.inf
+            return
+        res_name, res_distance = None, math.inf
         for id, (name, encoding) in know_encodings.items():
 
             face_ret, distance = api.compare_faces(encoding, image_to_test_encoding, tolerance=self.tolerance)
@@ -54,8 +56,40 @@ class Runner(object):
                 if distance < res_distance:
                     res_name = name
                     res_distance = distance
+        res = self.register.get_one_detail(name=res_name)
         self.register.update_query(name=res_name)
-        return [res_name]
+        return res
+
+    def batch_register(self, folder, video=False):
+        import os
+        import re
+        import glob
+
+        if not video:
+            for img in glob.glob(os.path.join(folder, "*.jpg")):
+                name = re.split('[./]', img)[-2]
+                face_img = api.load_image_file(img)
+                res = self.run_register(name, face_img)
+                if res != '注册成功':
+                    return f'{name} 注册失败，请检查照片'
+            return '批量注册成功！'
+        else:
+            import cv2
+            for video in glob.glob(os.path.join(folder, "*.mp4")):
+                name = re.split('[./]', video)[-2]
+                cap = cv2.VideoCapture(video)
+                while True:
+                    ret, img = cap.read()
+                    if not ret:
+                        return f'{name} 注册失败，请检查视频'
+                    else:
+                        img = cv2.resize(img, (640, 480))
+                        res = self.run_register(name, img)
+                        if res != '注册成功':
+                            return f'{name} 注册失败，请检查视频'
+                        else:
+                            break
+            return '批量注册成功！'
 
     def get_detail_with_pension(self):
         return self.register.get_detail_with_pension()

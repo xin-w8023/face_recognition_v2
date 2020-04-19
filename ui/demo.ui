@@ -39,7 +39,7 @@
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>580</y>
+      <y>550</y>
       <width>112</width>
       <height>32</height>
      </rect>
@@ -52,7 +52,7 @@
     <property name="geometry">
      <rect>
       <x>28</x>
-      <y>580</y>
+      <y>550</y>
       <width>112</width>
       <height>32</height>
      </rect>
@@ -106,7 +106,7 @@ background-color: rgb(212, 212, 212);</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>580</y>
+      <y>550</y>
       <width>112</width>
       <height>32</height>
      </rect>
@@ -119,7 +119,7 @@ background-color: rgb(212, 212, 212);</string>
     <property name="geometry">
      <rect>
       <x>148</x>
-      <y>580</y>
+      <y>550</y>
       <width>112</width>
       <height>32</height>
      </rect>
@@ -131,7 +131,7 @@ background-color: rgb(212, 212, 212);</string>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>380</x>
+      <x>140</x>
       <y>10</y>
       <width>151</width>
       <height>41</height>
@@ -150,7 +150,7 @@ background-color: rgb(212, 212, 212);</string>
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>580</y>
+      <y>550</y>
       <width>112</width>
       <height>32</height>
      </rect>
@@ -172,18 +172,63 @@ background-color: rgb(212, 212, 212);</string>
      <string>info</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>940</width>
-     <height>22</height>
-    </rect>
-   </property>
+   <widget class="QPushButton" name="batch_photo">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>610</y>
+      <width>112</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>照片批量采集</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="batch_video">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>610</y>
+      <width>112</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>视频批量采集</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="test">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>610</y>
+      <width>112</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>test</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actioncamera">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>camera</string>
+   </property>
+  </action>
+  <action name="actionfile">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>file</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

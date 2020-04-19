@@ -21,19 +21,3 @@ if __name__ == '__main__':
     ui = Ui_MainWindow2(main_win, runner)
     main_win.show()
     sys.exit(app.exec_())
-# import time
-# import matplotlib.pyplot as plt
-# import cv2
-#
-# cap = cv2.VideoCapture(0)
-# while True:
-#     flag, frame = cap.read()
-#
-#     cv2.imshow('camera',frame)
-#     # plt.imshow(frame)
-#     # plt.show()
-#     # time.sleep(1)
-#     key = cv2.waitKey(10)
-#     if key == 27:  # exit on ESC
-#         break
-# cv2.destroyAllWindows()

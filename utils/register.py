@@ -40,6 +40,12 @@ class Register(object):
         res = self.cursor.fetchall()
         return res
 
+    def get_one_detail(self, name):
+        sql = f'select name, pension from {self.table_name} where name=="{name}"'
+        ret = self.cursor.execute(sql)
+        res = self.cursor.fetchall()
+        return res
+
     def get_encoding_by_name(self, name) -> np.ndarray:
         sql = f'select id, name, encoding from {self.table_name} where NAME=="{name}"'
         ret = self.cursor.execute(sql)
