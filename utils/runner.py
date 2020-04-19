@@ -1,6 +1,4 @@
-
 import math
-
 
 import numpy as np
 
@@ -69,16 +67,19 @@ class Runner(object):
 
     def batch_register(self, folder, video=False):
         import os
-        import re
         import glob
 
         if not video:
-            container = glob.glob(os.path.join(folder, "*.jpg"))
+            container = []
+            for suffix in ('*.jpg', '*.jpeg', '*.png'):
+                container += glob.glob(os.path.join(folder, suffix))
+
             print(container)
             if not container:
                 return f'未找到照片(jpg)'
             for img in container:
-                name = re.split('[./]', img)[-2]
+                _, basename = os.path.split(img)
+                name = basename.split('.')[0]
                 face_img = api.load_image_file(img)
                 res = self.run_register(name, face_img)
                 if res not in  ('注册成功', '已采集过'):
@@ -87,12 +88,14 @@ class Runner(object):
                 return '批量注册成功！'
         else:
             import cv2
-            container = glob.glob(os.path.join(folder, "*.mp4"))
+            container = []
+            for suffix in ('*.mp4', '*.avi', '*.mov'):
+                container += glob.glob(os.path.join(folder, suffix))
             if not container:
                 return f'未找到视频(mp4)'
-            for video in glob.glob(os.path.join(folder, "*.mp4")):
-                print(video)
-                name = re.split('[./]', video)[-2]
+            for video in container:
+                _, basename = os.path.split(video)
+                name = basename.split('.')[0]
                 cap = cv2.VideoCapture(video)
                 while True:
                     ret, img = cap.read()
@@ -101,9 +104,7 @@ class Runner(object):
                     else:
                         img = cv2.resize(img, (640, 480))
                         res = self.run_register(name, img)
-
                         if res in  ('注册成功', '已采集过'):
-                            # return f'{name} 注册失败，请检查视频'
                             break
                         else:
                             return f'{name} 注册失败，请检查视频'
