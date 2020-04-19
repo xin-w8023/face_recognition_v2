@@ -27,7 +27,10 @@ class Runner(object):
         """
         if not isinstance(face_img, np.ndarray):
             return '请打开摄像头'
-        encoding = api.face_encodings(face_img)[0]
+        try:
+            encoding = api.face_encodings(face_img)[0]
+        except IndexError:
+            return
         all_names = [item[0] for item in self.register.get_detail_with_pension()]
         if name in all_names:
             return '已采集过'
@@ -70,7 +73,11 @@ class Runner(object):
         import glob
 
         if not video:
-            for img in glob.glob(os.path.join(folder, "*.jpg")):
+            container = glob.glob(os.path.join(folder, "*.jpg"))
+            print(container)
+            if not container:
+                return f'未找到照片(jpg)'
+            for img in container:
                 name = re.split('[./]', img)[-2]
                 face_img = api.load_image_file(img)
                 res = self.run_register(name, face_img)
@@ -80,7 +87,11 @@ class Runner(object):
                 return '批量注册成功！'
         else:
             import cv2
+            container = glob.glob(os.path.join(folder, "*.mp4"))
+            if not container:
+                return f'未找到视频(mp4)'
             for video in glob.glob(os.path.join(folder, "*.mp4")):
+                print(video)
                 name = re.split('[./]', video)[-2]
                 cap = cv2.VideoCapture(video)
                 while True:
@@ -90,10 +101,12 @@ class Runner(object):
                     else:
                         img = cv2.resize(img, (640, 480))
                         res = self.run_register(name, img)
-                        if res not in  ('注册成功', '已采集过'):
-                            return f'{name} 注册失败，请检查视频'
-                        else:
+
+                        if res in  ('注册成功', '已采集过'):
+                            # return f'{name} 注册失败，请检查视频'
                             break
+                        else:
+                            return f'{name} 注册失败，请检查视频'
                 cap.release()
             else:
                 return '批量注册成功！'

@@ -88,14 +88,25 @@ class Ui_MainWindow2(Ui_MainWindow):
         self.res.setPlainText(self._get_res_string(res))
 
     def _register_with_photos(self):
-        text, okPressed = QtWidgets.QInputDialog().getText(None, '', '文件夹地址')
-        if okPressed and text:
-            info = self.runner.batch_register(folder=text, video=False)
-            QtWidgets.QMessageBox().information(None, '提示', info, QtWidgets.QMessageBox.Yes)
+        text, okPressed = QtWidgets.QInputDialog().getText(None, '照片采集', '文件夹地址')
+        if okPressed:
+            if text:
+                info = self.runner.batch_register(folder=text, video=False)
+                QtWidgets.QMessageBox().information(None, '提示', info, QtWidgets.QMessageBox.Yes)
+            else:
+                info = '请输入文件夹'
+                QtWidgets.QMessageBox().warning(None, '提示', info, QtWidgets.QMessageBox.Yes)
 
     def _register_with_videos(self):
-        info = self.runner.batch_register(folder=self.res.toPlainText(), video=True)
-        QtWidgets.QMessageBox().information(None, '提示', info, QtWidgets.QMessageBox.Yes)
+        text, okPressed = QtWidgets.QInputDialog().getText(None, '视频采集', '文件夹地址')
+        print(text, okPressed)
+        if okPressed:
+            if text:
+                info = self.runner.batch_register(folder=text, video=True)
+                QtWidgets.QMessageBox().information(None, '提示', info, QtWidgets.QMessageBox.Yes)
+            else:
+                info = '请输入文件夹'
+                QtWidgets.QMessageBox().warning(None, '提示', info, QtWidgets.QMessageBox.Yes)
 
     def init_slots(self):
         self.open_camera.clicked.connect(self._open_camera)
