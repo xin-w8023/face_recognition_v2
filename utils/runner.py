@@ -45,7 +45,6 @@ class Runner(object):
         :param face_folder: image file folder
         :return: recognize result
         """
-        print(face_img)
         if not isinstance(face_img, np.ndarray):
             return ('请打开摄像头',)
         know_encodings = self.register.get_encodings()
@@ -73,8 +72,6 @@ class Runner(object):
             container = []
             for suffix in ('*.jpg', '*.jpeg', '*.png'):
                 container += glob.glob(os.path.join(folder, suffix))
-
-            print(container)
             if not container:
                 return f'未找到照片(jpg)'
             for img in container:

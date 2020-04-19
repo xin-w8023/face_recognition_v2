@@ -32,6 +32,7 @@ class Register(object):
             self.cursor.execute(sql)
             self.connect.commit()
         except Exception as e:
+            self.connect.rollback()
             return False, e
         return True, ""
 

@@ -5,7 +5,7 @@
 # Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
-import time
+
 
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -61,7 +61,6 @@ class Ui_MainWindow2(Ui_MainWindow):
             QtWidgets.QMessageBox().warning(None, '警告','摄像头读取失败', QtWidgets.QMessageBox.Yes)
             return
         res = self.runner.run_test(image)
-        print(res)
         info = '识别失败!'
         if res:
             info = res[0][0] + '识别成功!'
@@ -99,7 +98,6 @@ class Ui_MainWindow2(Ui_MainWindow):
 
     def _register_with_videos(self):
         text, okPressed = QtWidgets.QInputDialog().getText(None, '视频采集', '文件夹地址')
-        print(text, okPressed)
         if okPressed:
             if text:
                 info = self.runner.batch_register(folder=text, video=True)
