@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         self.img_win.setCursor(QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.img_win.setAutoFillBackground(False)
         self.img_win.setStyleSheet("border-color: rgba(29, 29, 29, 100);\n"
-"background-color: rgb(212, 212, 212);")
+"background-color: rgb(255, 255, 255);")
         self.img_win.setText("")
         self.img_win.setObjectName("img_win")
         self.recognize = QtWidgets.QPushButton(self.centralwidget)
