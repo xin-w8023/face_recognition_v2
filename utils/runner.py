@@ -15,14 +15,13 @@ class Runner(object):
         self.register.clear()
 
     def run_register(self, name, face_img):
-        """Register a register's face encoding into data base
+        """注册流程
 
-        Parameters:
-            register: data base handler
-            face_folder: image file folder
-        Returns:
-
+        :param name: 姓名
+        :param face_img: 人脸照片
+        :return: 是否注册成功
         """
+
         if not isinstance(face_img, np.ndarray):
             return '请打开摄像头'
         try:
@@ -39,12 +38,12 @@ class Runner(object):
             return '注册成功'
 
     def run_test(self, face_img):
+        """识别流程
+
+        :param face_img: 人脸照片
+        :return: 识别成功（人名）/ 识别失败（错误信息）
         """
-        face recognition
-        :param register: data base handler
-        :param face_folder: image file folder
-        :return: recognize result
-        """
+
         if not isinstance(face_img, np.ndarray):
             return ('请打开摄像头',)
         know_encodings = self.register.get_encodings()
@@ -65,6 +64,13 @@ class Runner(object):
         return res
 
     def batch_register(self, folder, video=False):
+        """批量注册
+
+        :param folder: 批量注册文件夹
+        :param video: 是否是视频注册
+        :return: 是否批量注册成功
+        """
+
         import os
         import glob
 
@@ -110,4 +116,6 @@ class Runner(object):
                 return '批量注册成功！'
 
     def get_detail_with_pension(self):
+        """获取表中所有的姓名和是否领取退休金信息"""
+
         return self.register.get_detail_with_pension()

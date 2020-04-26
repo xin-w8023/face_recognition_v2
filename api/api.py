@@ -73,6 +73,7 @@ def _raw_face_landmarks(face_image, model='cnn', face_locations=None):
     pose_predictor = pose_predictor_68_point
     return [pose_predictor(face_image, face_location) for face_location in face_locations]
 
+
 def face_encodings(face_image, model='cnn', known_face_locations=None, num_jitters=1):
     """
     Given an image, return the 128-dimension face encoding for each face in the image.
